@@ -1,8 +1,8 @@
 {
 	"name": "My Delicious Past",
-	"version": "0.2",
+	"version": "0.2.1",
 	"minimum_chrome_version": "5.0.316.0",
-	"description": "Start of a Chrome extension",
+	"description": "Reminisce about your past Delicious bookmarks",
 	"icons": {
 		"16": "img/icon_16.png",
 		"32": "img/icon_32.png",
