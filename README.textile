@@ -8,3 +8,13 @@ the extension will show you bookmarks from December 17 of 2009, 2008, and so on.
 The rumor that Yahoo is closing Delicious inspired me to make this extension.
 However, it doesn't look like it's not going to happen. Regardless,
 I hope this extension helps you reconnect with your past bookmarks.
+
+h2. License
+
+Copyright 2011, "Ian Li":http://ianli.com
+Licensed under the "MIT license":http://www.opensource.org/licenses/mit-license.php
+
+h2. Versions
+
+0.1	2011-01-02
+- Initial implementation
