@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--
+ * My Delicious Past - Chrome Extension
+ * http://ianli.com/deliciousmemory/
+ *
+ * Copyright 2010, Ian Li (http://ianli.com)
+ * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php).
+-->
+<html>
+<head>
+	<title>Options - My Delicious Past</title>
+	
+	<!-- Blueprint -->
+	<link rel="stylesheet" href="css/cw15gw20cc24/screen.css" type="text/css" media="screen, projection" />
+
+	<!-- @font-face: 'RockwellStdBold' -->
+	<link rel="stylesheet" href="css/rockwell-bold/stylesheet.css" type="text/css" />
+	
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="css/main.css" type="text/css" />
+	
+	<style type="text/css">
+	#delicious_download,
+	#delicious_save {
+		display:block;
+		padding:8px 6px;
+		height:36px;
+		text-align:center;
+		font-size:24px;
+		font-family: 'RockwellStdBold', Helvetica, Arial, sans-serif;
+		color:#ffd;
+		background-color:#333;
+		text-decoration:none;
+		-webkit-border-radius:5px;
+	}
+	#delicious_loading {
+		display:none;
+		padding:8px 6px;
+		height:36px;
+		background:#333 url(img/ajax-loader.gif) center center no-repeat;
+		-webkit-border-radius:5px;
+	}
+	textarea#delicious_xml {
+		margin:0;
+		padding:5px;
+		width:810px;
+		height:400px;
+		white-space:nowrap;
+		overflow-x:auto;
+		border:1px solid #ccc;
+	}
+	</style>
+</head>
+<body>
+
+<div class="container">
+	<div id="hd" class="span-24">
+		<h1>My Delicious Past</h1>
+		<div id="nav">
+			<a href="browse.html">Browse All</a>
+			<a href="options.html" class="selected">Options</a>
+		</div>
+	</div>
+	
+	<div id="bd" class="span-24">
+		<div class="span-6">
+			<a id="delicious_download" href="#" onclick="download();return false;">Download</a>
+			<div id="delicious_loading">&nbsp;</div>
+		</div>
+		<div class="span-9">
+			After clicking this button, a popup will appear to enter your Delicious username and password.
+			Don't worry, this app will not see your password.
+		</div>
+		<div class="span-9 last">
+			&nbsp;
+		</div>
+		<hr class="space" />
+		
+		<textarea id="delicious_xml"></textarea>
+		<hr class="space" />
+		
+		<div class="span-6">
+			<a id="delicious_save" href="" target="_new" style="display:none;">Save to File</a>
+		</div>
+	</div>
+	
+	<div id="ft" class="span-24">
+		&copy; 2010 My Delicious Past by <a href="http://ianli.com/">Ian Li</a>
+	</div>
+</div>
+
+<!-- Javascripts -->
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+	var backgroundPage = chrome.extension.getBackgroundPage();
+	
+	function update(xml) {
+		// Show update instead of "Fetch".
+		$("#delicious_download").html("Update");
+		
+		// Show the XML on the text area.
+		$("#delicious_xml").val(xml);
+		
+		// Show the download button.
+		$("#delicious_save")
+			.show()
+			.attr("href", "data:text/plain;charset=utf-8," + encodeURI(xml));
+			
+		// Update the badge.
+		backgroundPage.updateBadge();
+	}
+	
+	function download() {
+		$("#delicious_download").hide();
+		$("#delicious_loading").show();
+		
+		$.ajax({
+			"url": "https://api.del.icio.us/v1/posts/all",
+			"success": function (data, textStatus, xhr) {
+				backgroundPage.deliciousXML.xml(xhr.responseText);
+				update(xhr.responseText);
+				
+				$("#delicious_download").show();
+				$("#delicious_loading").hide();
+			},
+			"error": function (xhr, textStatus, errorThrown) {
+				$("#delicious_download").show();
+				$("#delicious_loading").hide();
+			}
+		});
+	}
+	
+	$(document).ready(function() {
+		if (xml = backgroundPage.deliciousXML.xml()) {
+			update(xml);
+		}
+	});
+</script>
+
+</body>
+</html>

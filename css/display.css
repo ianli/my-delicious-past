@@ -1,0 +1,35 @@
+.pad {
+	padding:4px 6px;
+}
+
+#display>ul {
+	margin:0;
+	padding:0;
+	max-height:500px;
+	overflow-y:auto;
+	list-style:none;
+}
+	#display>ul>li {
+		clear:both;
+		border-bottom:1px solid #fff;
+	}
+	#display>ul>li>a {
+		display:block;
+		padding:4px 6px;
+		line-height:1.2em;
+		color:#333;
+		text-decoration:none;
+	}
+		#display>ul>li>a:hover {
+			color:#ffd;
+			background-color:#333;
+		}
+	#display>ul>li>a>span.date {
+		display:block;
+		float:right;
+		color:#999;
+	}
+	#display span.tags {
+		font-size:11px;
+		color:#999;
+	}

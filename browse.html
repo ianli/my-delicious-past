@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--
+ * My Delicious Past - Chrome Extension
+ * http://ianli.com/deliciousmemory/
+ *
+ * Copyright 2010, Ian Li (http://ianli.com)
+ * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php).
+-->
+<html>
+<head>
+	<title>Browse - My Delicious Past</title>
+	
+	<!-- Blueprint CSS -->
+	<link rel="stylesheet" href="css/cw15gw20cc24/screen.css" type="text/css" media="screen, projection" />
+
+	<!-- @font-face: 'RockwellStdBold' -->
+	<link rel="stylesheet" href="css/rockwell-bold/stylesheet.css" type="text/css" />
+	
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/main.css" type="text/css" />
+	<link rel="stylesheet" href="css/display.css" type="text/css" />
+	
+	<style type="text/css">
+	.calendar {
+	}
+		.calendar th {
+			padding:0;
+		}
+		.calendar td {
+			padding:0;
+			text-align:center;
+			line-height:1.3em;
+			cursor:pointer;
+			border:1px solid transparent;
+		}
+		.calendar td.today {
+			border:1px solid #333;
+			-webkit-border-radius:10px;
+		}
+		.calendar td.selected,
+		.calendar td:hover {
+			color:#ffd;
+			background-color:#333;
+		}
+	
+	#info {
+		color:#ffd;
+		background-color:#333;
+		border-bottom:1px solid #ffd;
+	}
+		#info a {
+			color:#ffd;
+			text-decoration:none;
+		}
+		#info h2 {
+			margin:0;
+			font-family:'RockwellStdBold', Helvetica, Arial, sans-serif;
+			color:#ffd;
+			font-size:13px;
+		}
+	</style>
+</head>
+<body>
+
+<div class="container">
+	<div id="hd" class="span-24">
+		<h1>My Delicious Past</h1>
+		<div id="nav">
+			<a href="browse.html" class="selected">Browse All</a>
+			<a href="options.html">Options</a>
+		</div>
+	</div>
+	
+	<div id="bd" class="span-24">
+		<div id="calendars" class="span-12">
+			<!-- Calendars go here -->
+		</div>
+		<div class="span-12 last">
+			<div id="info" class="pad">
+				<h2>Bookmarks for <span id="info_date"></span></h2>
+			</div>
+			<div id="display">
+				<!-- Display of links goes here -->
+			</div>
+		</div>
+	</div>
+	
+	<div id="ft" class="span-24">
+		&copy; 2010 My Delicious Past by <a href="http://ianli.com/">Ian Li</a>
+	</div>
+</div>
+
+<!-- Javascript -->
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="js/delicious-memory.js"></script>
+<script type="text/javascript">
+/**
+ * Creates the HTML for the specified month and appends it to the element.
+ */
+function calendarHtml($element, month, n_days) {
+	var MONTHS = [	"January", "February", "March", "April",
+					"May", "June", "July", "August",
+					"September", "October", "November", "December" ];
+					
+	var $table = $("<table></table>")
+				.addClass("calendar")
+				.appendTo($element);
+				
+	$('<tr><th colspan="7">' + MONTHS[month] + "</th></tr>")
+		.appendTo($table);
+		
+	for (var i = 0, n = n_days / 7; i < n; i++) {
+		var $row = $("<tr></tr>").appendTo($table);
+		for (var j = 0; j < 7; j++) {
+			var date = (i * 7) + j + 1;
+			
+			if (date > n_days) {
+				break;
+			}
+			
+			$("<td></td>")
+				.html(date)
+				.appendTo($row)
+				.data({
+					month: month,
+					date: date
+				})
+				.click(function() {
+					$("td.selected").removeClass("selected");
+					$(this).addClass("selected");
+					
+					// Show links.
+					var m = $(this).data("month");
+					var d = $(this).data("date");
+					deliciousLinksHtml(m, d);
+					
+					// Update date on info bar.
+					$("#info_date")
+						.html(MONTHS[m] + " " + d);
+				});
+		}
+	}
+}
+
+$(document).ready(function() {
+	var N_DAYS = [	31, 29, 31, 30, 
+					31, 30, 31, 31,
+					30, 31, 30, 31 ];
+	
+	// Create the calendars.
+	var $calendars = $("#calendars");
+	for (var i = 0; i < 12; i++) {
+		var n_days = N_DAYS[i];
+		
+		var $div = $("<div></div>")
+					.addClass("span-4")
+					.appendTo($calendars);
+			
+		if (i % 3 == 2) {
+			$div.addClass("last");
+			$("<div></div>")
+				.addClass("clear")
+				.appendTo($calendars);
+		}
+		
+		// Create the calendar for this month (0-indexed).
+		calendarHtml($div, i, n_days);
+	}
+	
+	var today = new Date();
+	var month = today.getMonth();
+	var day = today.getDate() - 1;
+	$(".calendar").eq(month)
+		.find("td").eq(day)
+		.addClass("today")
+		.click();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--
+ * My Delicious Past - Chrome Extension
+ * http://ianli.com/deliciousmemory/
+ *
+ * Copyright 2010, Ian Li (http://ianli.com)
+ * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php).
+-->
+<html>
+
+<!-- Javascript -->
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript">
+
+(function () {
+	var root = this;
+	
+	/**
+	 * The class that represents the Delicious XML.
+	 * @class
+	 */
+	var DeliciousXML = function () {
+		var self = this;
+		
+		var xml = null;
+		
+		var posts = [];
+		
+		/**
+		 * Converts the XML file to an array of posts.
+		 * Each post contains the following properties:
+		 * - href {String}
+		 * - hash {String}
+		 * - description {String}
+		 * - tags {Array}
+		 * - time {Date}
+		 * - extended {String}
+		 * - meta {String}
+		 *
+		 * @param	{String}	xml	An XML string.
+		 * @returns	{Array}	An array of posts.
+		 * @private
+		 */
+		var xml2posts = function (xml) {
+			return $(xml).find("post")
+					.map(function (i, element) {
+						var $element = $(element);
+						var tags = $element.attr("tag").split(" ");
+						var time = new Date($element.attr("time"));
+						return {
+							"href": $element.attr("href"),
+							"hash": $element.attr("hash"),
+							"description": $element.attr("description"),
+							"tags": tags,
+							"time": time,
+							"extended": $element.attr("extended"),
+							"meta": $element.attr("meta")
+						};
+					})
+					.get();
+		}
+
+		var groupByDate = function (posts) {
+			var groups = {};
+			for (var i = 0, n = posts.length; i < posts.length; i++) {
+				var post = posts[i];
+				var time = post.time;
+				if (time) {
+					var key = time.getMonth() + "-" + time.getDate();
+
+					if (typeof groups[key] === 'undefined') {
+						groups[key] = [];
+					}
+
+					groups[key].push(post);
+				}
+			}
+			return groups;
+		}
+		
+		/**
+		 * Gets/sets the XML value of this class.
+		 * @param {String}	An XML string (optional)
+		 * @returns	{String}	If value is not supplied, returns the XML string.
+		 */
+		this.xml = function (value) {
+			if (typeof value === 'undefined') {
+				return xml;
+			} else {
+				xml = value;
+				posts = xml2posts(value);
+				localStorage.setItem("delicious_xml", value);
+			}
+		}
+		
+		/**
+		 * Returns all the posts.
+		 * @returns	{Array}	An array of all the posts.
+		 */
+		this.posts = function () {
+			return posts;
+		}
+		
+		/**
+		 * Returns the posts with the given date.
+		 * If month and date are not supplied, returns posts that have the same date as today.
+		 * @param	{Number}	month	The numeric month (0-11)
+		 * @param	{Number}	date	The date (1-31)
+		 * @returns	{Array}	An array of posts that have the same date.
+		 */
+		this.postsByDate = function () {
+			if (arguments.length == 2) {
+				var month = arguments[0];
+				var date = arguments[1];
+			} else {
+				var today = new Date();
+				var month = today.getMonth();
+				var date = today.getDate();
+			}
+			
+			var set = [];
+			for (var i = 0, n = posts.length; i < n; i++) {
+				var post = posts[i];
+				var time = post.time;
+				if (time
+					&& month == time.getMonth()
+					&& date == time.getDate()) {
+						set.push(post);
+				}
+			}
+			
+			return set;
+		}
+		
+		// Initialize.
+		if (xml = localStorage.getItem("delicious_xml")) {
+			posts = xml2posts(xml);
+		}
+	}
+	
+	// Expose deliciousXML to the global variable.
+	root.deliciousXML = new DeliciousXML();
+})();
+</script>
+<script type="text/javascript">
+	function updateBadge() {
+		if (deliciousXML.xml()) {
+			chrome.browserAction.setBadgeText({
+				text: "" + deliciousXML.postsByDate("today").length
+			})
+		}
+	}
+	
+	var currentDate = new Date();
+	
+	updateBadge();
+	
+	// Every minute check if we're in a new date.
+	// If so, update the badge.
+	setInterval(
+		function () {
+			var now = new Date();
+			if (currentDate.getMonth() == now.getMonth()
+				&& currentDate.getDate() == now.getDate()) {
+				updateBadge();
+			}
+			currentDate = now;
+		}, 
+		60 * 1000
+	);
+</script>
+<script type="text/javascript">
+	// // Reference:
+	// // - http://code.google.com/chrome/extensions/tabs.html
+	// 
+	// // The tab id of the Write for Ten tab.
+	// var tabId = null;
+	// 
+	// // Handle when the Write for Ten icon is clicked.
+	// chrome.browserAction.onClicked.addListener(function(tab) {
+	// 	if (typeof tabId !== 'undefined' && tabId != null) {
+	// 		// Tab is already opened, so just focus.
+	// 		chrome.tabs.update(
+	// 			tabId, 
+	// 			{ selected: true },
+	// 			function(tab) {
+	// 				// do nothing.
+	// 			});
+	// 	} else {
+	// 		// Tab has not been created, so create one.
+	// 		chrome.tabs.create({
+	// 				"url": "options.html"
+	// 			}, 
+	// 			function(tab) {
+	// 				// Remember the tab id, so that we don't open other instances.
+	// 				tabId = tab.id;
+	// 			}
+	// 		);
+	// 	}
+	// });
+	// 
+	// // Handle when the tab is closed.
+	// chrome.tabs.onRemoved.addListener(function(id /** integer */) {
+	// 	if (tabId == id) {
+	// 		tabId = null;
+	// 	}
+	// });
+</script>
+</html>

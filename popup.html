@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+ * My Delicious Past - Chrome Extension
+ * http://ianli.com/deliciousmemory/
+ *
+ * Copyright 2010, Ian Li (http://ianli.com)
+ * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php).
+-->
+<html>
+<head>
+	<title>Popup - My Delicious Past</title>
+	
+	<!-- Blueprint CSS -->
+	<link rel="stylesheet" href="css/cw25gw10cc12/screen.css" type="text/css" />
+	
+	<!-- @font-face: 'RockwellStdBold' -->
+	<link rel="stylesheet" href="css/rockwell-bold/stylesheet.css" type="text/css" />
+	
+	<link rel="stylesheet" href="css/display.css" type="text/css" />
+	
+	<style type="text/css">
+	body {
+		background-color:#ffd;
+	}
+	#hd,
+	#info {
+		color:#ffd;
+		background-color:#333;
+		border-bottom:1px solid #ffd;
+	}
+		#info a,
+		#hd a {
+			color:#ffd;
+			text-decoration:none;
+		}
+		#hd h1,
+		#info h2 {
+			margin:0;
+			font-family:'RockwellStdBold', Helvetica, Arial, sans-serif;
+			color:#ffd;
+		}
+		#hd { -webkit-border-radius:0 0 5px 5px; }
+		#info { -webkit-border-radius:5px 5px 0 0; }
+		#hd h1 { font-size:15px; }
+		#info h2 { font-size:13px; }
+	</style>
+</head>
+<body>
+
+<div class="container">
+	<div id="info" class="span-12" style="display:none">
+		<div class="span-6">
+			<div class="pad">
+				<h2>Bookmarks on <span id="info_date"></span></h2>
+			</div>
+		</div>
+		<div class="span-6 last">
+			<div class="pad" style="text-align:right;">
+				<a href="browse.html" target="_new">Browse All</a>
+			</div>
+		</div>
+	</div>
+	<div id="display" class="span-12">
+	</div>
+	<div id="hd" class="span-12">
+		<div class="span-6">
+			<div class="pad">
+				<h1>My Delicious Past</h1>
+			</div>
+		</div>
+		<div class="span-6 last">
+			<div class="pad" style="text-align:right;">
+				<a href="options.html" target="_new">Options</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Javascript -->
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="js/delicious-memory.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var today = new Date();
+	deliciousLinksHtml(today.getMonth(), today.getDate());
+});
+</script>
+</body>
+</html>
