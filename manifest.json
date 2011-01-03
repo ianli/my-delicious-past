@@ -1,6 +1,6 @@
 {
 	"name": "My Delicious Past",
-	"version": "0.1",
+	"version": "0.2",
 	"minimum_chrome_version": "5.0.316.0",
 	"description": "Start of a Chrome extension",
 	"icons": {
