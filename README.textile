@@ -1,0 +1,10 @@
+h1. My Delicious Past
+
+This Chrome extension helps you reminisce about all the bookmarks that you saved using Delicious.
+Every day, this extension will show you bookmarks that have the same date.
+For example, if you're using Chrome on December 17, 2010, 
+the extension will show you bookmarks from December 17 of 2009, 2008, and so on.
+
+The rumor that Yahoo is closing Delicious inspired me to make this extension.
+However, it doesn't look like it's not going to happen. Regardless,
+I hope this extension helps you reconnect with your past bookmarks.
