@@ -1,0 +1,42 @@
+{
+	// Required
+	"name": "My Delicious Past",
+	"version": "0.2.1",
+	"minimum_chrome_version": "5.0.316.0",
+	
+	// Recommended
+	"description": "Reminisce about your past Delicious bookmarks",
+	"icons": {
+		"16": "img/icon_16.png",
+		"32": "img/icon_32.png",
+		"64": "img/icon_64.png",
+		"128": "img/icon_128.png"
+	},
+	// "default_locale": "en",
+	
+	// Pick one (or none)
+	"browser_action": {
+	"default_icon": "img/icon.png",
+	       "default_title": "My Delicious Past",
+	       "default_popup": "popup.html"
+	},
+	// "page_action": {},
+	// "theme": {},
+	
+	// Add any of these that you need
+	"background_page": "background.html",
+	"options_page": "options.html",
+	"permissions": [
+		"unlimitedStorage",
+		"tabs",
+		"https://api.del.icio.us/*"
+	],
+	"incognito": "spanning"
+	// "chrome_url_overrides": {...},
+	// "content_scripts": [...],
+	// "key": "publicKey",
+	// "minimum_chrome_version": "versionString",
+	// "options_page": "aFile.html",
+	// "plugins": [...],
+	// "update_url": "http://path/to/updateInfo.xml"
+}
